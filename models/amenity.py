@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 
 class Amenity(BaseModel, Base):
+    """ amenities inluded"""
     __tablename__ = 'amenities'
     name = Column(String(128), nullable=False)
     places_amenities = relationship("Place", secondary=place_amenity)
