@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" """
+""" unittest for the console commands"""
 import console
 import sys
 import unittest
