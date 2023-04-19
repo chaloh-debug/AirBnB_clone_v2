@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 """ City Module for HBNB project """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from os import getenv
+from models.place import Place
 
 
 class City(BaseModel, Base):
@@ -15,3 +16,7 @@ class City(BaseModel, Base):
 
     places = relationship("Place", backref="cities",
                           cascade='all, delete, delete-orphan')
+
+    if getenv("HBNB_TYPE_STORAGE") != "db":
+        state_id = ""
+        name = ""

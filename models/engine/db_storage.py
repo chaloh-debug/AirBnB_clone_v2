@@ -50,7 +50,7 @@ class DBStorage:
             classes = [State, City, User, Place, Review, Amenity]
             for i in classes:
                 query = self.__session.query(i)
-                for j in classes:
+                for j in query:
                     key = "{}.{}".format(type(j).__name__, j.id)
                     dct[key] = j
         return dct
