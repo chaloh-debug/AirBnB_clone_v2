@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """ module for file storage management"""
-from models.base_model import Base, Basemodel
+from models.base_model import Base, BaseModel
 from models.amenity import Amenity
 from models.city import City
 from models.place import Place
