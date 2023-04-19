@@ -47,7 +47,7 @@ class Place(BaseModel, Base):
             lists = []
             rvs = models.storage.all(Review)
             for rev in list(rvs.values()):
-                if self.id == rev.place_id:
+                if rev.place_id == self.id:
                     lists.append(rev)
             return lists
 
