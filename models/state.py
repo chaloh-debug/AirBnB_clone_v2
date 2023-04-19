@@ -4,7 +4,7 @@ from models.base_model import BaseModel
 from sqlalchemy import String, Column, Integer
 from os import getenv
 from sqlalchemy.orm import relationship
-from model.city import City
+from models.city import City
 import models
 
 
