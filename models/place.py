@@ -46,7 +46,7 @@ class Place(BaseModel, Base):
             """ List of Review intsnces with Place_id"""
             lists = []
             rvs = models.storage.all(Review)
-            for rev in rvs.values():
+            for rev in list(rvs.values()):
                 if self.id == rev.place_id:
                     lists.append(rev)
             return lists
@@ -56,7 +56,7 @@ class Place(BaseModel, Base):
                 attribute amenity_ids.
             """
             if type(arg) is Amenity:
-                self.amenity_ids.append(arg.id)
+                Place.amenity_ids.append(arg.id)
 
         def amenities(self):
             """returns the list of Amenity instances
