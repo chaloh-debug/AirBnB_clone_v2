@@ -25,7 +25,7 @@ class Place(BaseModel, Base):
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
     user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
-    description = Column(String(1024), nullable=True)
+    description = Column(String(1024))
     number_rooms = Column(Integer, nullable=False, default=0)
     number_bathrooms = Column(Integer, nullable=False, default=0)
     max_guest = Column(Integer, nullable=False, default=0)
@@ -33,9 +33,10 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     amenity_ids = []
-    reviews = relationship("Review", backref="place",
-                           cascade="all, delete-orphan")
+
     if getenv("HBNB_TYPE_STORAGE") == "db":
+        reviews = relationship("Review", backref="place",
+                               cascade="all, delete-orphan")
         amenities = relationship("Amenity", secondary=place_amenity,
                                  back_populates="place_amenities",
                                  viewonly=False)
@@ -45,8 +46,8 @@ class Place(BaseModel, Base):
             """ List of Review intsnces with Place_id"""
             lists = []
             rvs = models.storage.all(Review)
-            for rev in list(rvs.values()):
-                if rev.place_id == self.id:
+            for rev in rvs.values():
+                if self.id == rev.place_id:
                     lists.append(rev)
             return lists
 
@@ -55,7 +56,7 @@ class Place(BaseModel, Base):
                 attribute amenity_ids.
             """
             if type(arg) is Amenity:
-                Place.amenity_ids.append(arg.id)
+                self.amenity_ids.append(arg.id)
 
         def amenities(self):
             """returns the list of Amenity instances
