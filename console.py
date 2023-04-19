@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.review import Review
 from shlex import split
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -37,7 +38,6 @@ class HBNBCommand(cmd.Cmd):
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
-
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,20 +115,20 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        foo = {}
-        lists = args.split(" ")
+        dct = {}
+        args = args.split(" ")
 
         if not args:
             print("** class name missing **")
             return
-        elif lists[0] not in HBNBCommand.classes:
+        elif argss[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
         for i in range(1, len(lists)):
             k, v = tuple(lists[i].split("="))
             if v[0] == '"':
-                v = v.strip('"').replace("_", " ")
+                v = v.strip('\'"').replace("_", " ")
             else:
                 try:
                     v = eval(v)
@@ -140,8 +140,8 @@ class HBNBCommand(cmd.Cmd):
         else:
             new_instance = HBNBCommand.classes[lists[0]](**foo)
             storage.new(new_instance)
-            print(new_instance.id)
-            storage.save()
+        print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -336,6 +336,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
