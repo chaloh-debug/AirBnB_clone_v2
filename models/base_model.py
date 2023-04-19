@@ -6,6 +6,7 @@ from sqlalchemy import Integer, Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 import models
 from os import getenv
+import uuid
 
 Base = declarative_base()
 
@@ -22,9 +23,16 @@ class BaseModel:
         if kwargs:
             for k, v in kwargs.items():
                 if k == "created_at" or k == "updated_at":
-                    v = datetime.strptime(v, '%Y-%m-%dT%H:%M:%S.%f')
+                     v = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
                 if k != "__class__":
                     setattr(self, k, v)
+            if storage_type == 'db':
+                if not hasattr(kwargs, 'id'):
+                    setattr(self, 'id', str(uuid.uuid4()))
+                if not hasattr(kwargs, 'created_at'):
+                    setattr(self, 'created_at', datetime.now())
+                if not hasattr(kwargs, 'updated_at'):
+                    setattr(self, 'updated_at', datetime.now())
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.utcnow()
@@ -37,7 +45,6 @@ class BaseModel:
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        from models import storage
         self.updated_at = datetime.now()
         storage.new(self)
         storage.save()

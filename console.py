@@ -136,13 +136,12 @@ class HBNBCommand(cmd.Cmd):
             v = v.strip("\"'").replace("_", " ")
             try:
                 v = eval(v)
-            except:
-                pass
+            except (NameError, SyntaxError):
+                continue
             setattr(new_instance, k, v)
 
         print(new_instance.id)
         new_instance.save()
-
 
     def help_create(self):
         """ Help information for the create method """
