@@ -19,10 +19,10 @@ class FileStorage:
         """Returns the list of objects of one type of class."""
         dct = {}
         if cls:
-            foo = self.__objects.keys()
-            for key in foo:
-                if key.split('.')[0] == cls.__name__:
-                    dct[key] = self.__objects[key]
+            foo = self.__objects.items()
+            for k, v in foo:
+                if isinstance(v, cls):
+                    dct[k] = self.__objects[k]
             return dct
         else:
             return self.__objects
