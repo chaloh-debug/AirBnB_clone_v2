@@ -10,7 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from shlex import split
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -114,34 +114,29 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        try:
+            if not args:
+                raise SyntaxError()
+            lst = line.split(" ")
+            if lst[0] not in self.all_classes:
+                raise NameError()
+            if len(lst) < 2:
+                raise IndexError()
+            obj = storage.all()
+            k = lst[0] + '.' + lst[1]
+            if k in obj:
+                del obj[k]
+                storage.save()
+            else:
+                raise KeyError()
+        except SyntaxError:
             print("** class name missing **")
-            return
-
-        args = args.split(" ")
-        cname = args[0]
-
-        if cname not in HBNBCommand.classes:
+        except NameError:
             print("** class doesn't exist **")
-            return
-
-        dct = {}
-        for attr in args[1:]:
-            new_dict = attr.split('=', 1)
-            dct[new_dict[0]] = new_dict[1]
-
-        new_instance = HBNBCommand.classes[cname]()
-
-        for k, v in dct.items():
-            v = v.strip("\"'").replace("_", " ")
-            try:
-                v = eval(v)
-            except (NameError, SyntaxError):
-                continue
-            setattr(new_instance, k, v)
-
-        print(new_instance.id)
-        new_instance.save()
+        except IndexError:
+            print("** instance id missing **")
+        except KeyError:
+            print("** no instance found **")
 
     def help_create(self):
         """ Help information for the create method """
