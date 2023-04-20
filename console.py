@@ -10,8 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from shlex import split
-import sqlalchemy
+
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -73,7 +72,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is '}'\
+                    if pline[0] is '{' and pline[-1] is'}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,41 +114,34 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        try:
-            if not args:
-                print("** class name missing **")
-                return
-
-            args = args.split(" ")
-
-            if args[0] not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-
-            dct = {}
-            for i in range(1, len(args)):
-                k, v = tuple(args[i].split("="))
-                if v[0] == '"':
-                    v = v.strip('"').replace("_", " ")
-                else:
-                    try:
-                        v = eval(v)
-                    except (SyntaxError, NameError):
-                        continue
-                dct[k] = v
-            if dct =={}:
-                new_instance = HBNBCommand.classes[args[0]]()
-            else:
-                new_instance = HBNBCommand.classes[args[0]](**dct)
-            try:
-                storage.save()
-                print(new_instance.id)
-            except sqlalchemy.exc.IntegrityError:
-                print("** This state_id didn't match with any stored state **")
-        except SyntaxError:
+        if not args:
             print("** class name missing **")
-        except NameError:
-            print("** class don't exist **")
+            return
+
+        args = args.split(" ")
+        cname = args[0]
+
+        if cname not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        dct = {}
+        for attr in args[1:]:
+            new_dict = attr.split('=', 1)
+            dct[new_dict[0]] = new_dict[1]
+
+        new_instance = HBNBCommand.classes[cname]()
+
+        for k, v in dct.items():
+            v = v.strip("\"'").replace("_", " ")
+            try:
+                v = eval(v)
+            except (NameError, SyntaxError):
+                continue
+            setattr(new_instance, k, v)
+
+        print(new_instance.id)
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -231,11 +223,11 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage.all().items():
+            for k, v in storage._FileStorage__objects.items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage.all().items():
+            for k, v in storage._FileStorage__objects.items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -344,7 +336,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
