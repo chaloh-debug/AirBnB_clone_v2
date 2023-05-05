@@ -13,22 +13,21 @@ def do_deploy(archive_path):
     if not exists(archive_path):
         return False
     try:
-        filename = archive_path.split("/")[-1].split(".")[0]
+        file = archive_path.split("/")[-1]
+        name = file.split(".")[0]
+
+        new_path = "/data/web_static/releases/{}/".format(name)
+        tmp_path = "/tmp/{}".format(file)
+
         put(archive_path, "/tmp/")
-        run("mkdir -p /data/web_static/releases/{}".format(filename))
-        run("tar -xzf /tmp/{}.tgz -C /data/web_static/releases/{}/"
-            .format(filename, filename))
-        run('rm -rf /tmp/{}.tgz'.format(filename))
-        run(('mv /data/web_static/releases/{}/web_static/* ' +
-            '/data/web_static/releases/{}/')
-            .format(filename, filename))
-        run('rm -rf /data/web_static/releases/{}/web_static'
-            .format(filename))
-        run('rm -rf /data/web_static/current')
-        run(('ln -s /data/web_static/releases/{}/' +
-            ' /data/web_static/current')
-            .format(filename))
-        print("Successfully deployed!!")
+        run("mkdir -p {}".format(new_path))
+        run("tar -xzf {} -C {}".format(tmp_path, new_path))
+        run("rm {}".format(tmp_path))
+        run("mv {}web_static/* {}".format(new_path, new_path))
+        run("rm -rf {}web_static".format(new_path))
+        run("rm -rf /data/web_static/current")
+        run("ln -s {} /data/web_static/current".format(new_path))
+        print("New version deployed!")
         return True
     except Exception:
         return False
