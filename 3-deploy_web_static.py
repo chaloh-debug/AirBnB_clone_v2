@@ -24,9 +24,9 @@ def do_pack():
         local("mkdir -p versions")
         path = ("versions/web_static_{}.tgz"
                 .format(datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")))
-        local("tar -cvzf {} web_static".format(path))
+        check = local("tar -cvzf {} web_static".format(path), capture=True)
         return path
-    except Exception:
+    except check.failed:
         return None
 
 
@@ -37,7 +37,7 @@ def do_deploy(archive_path):
     try:
         file = archive_path.split("/")[-1]
         name = file.split(".")[0]
-        
+
         new_path = "/data/web_static/releases/{}/".format(name)
         tmp_path = "/tmp/{}".format(file)
 
