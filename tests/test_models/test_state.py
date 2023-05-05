@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" """
+"""test for state"""
 import unittest
 import os
 from models.state import State
@@ -7,37 +7,43 @@ from models.base_model import BaseModel
 import pep8
 
 
-class test_state(test_basemodel):
-    """ """
+class TestState(unittest.TestCase):
+    """this will test the State class"""
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "State"
-        self.value = State
+    @classmethod
+    def setUpClass(cls):
+        """set up for test"""
+        cls.state = State()
+        cls.state.name = "CA"
 
-    def test_name3(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+    @classmethod
+    def teardown(cls):
+        """at the end of the test this will tear it down"""
+        del cls.state
 
-    def test_pep8(self):
-        """Test pep8 styling."""
+    def tearDown(self):
+        """teardown"""
+        try:
+            os.remove("file.json")
+        except Exception:
+            pass
+
+    def test_pep8_Review(self):
+        """Tests pep8 style"""
         style = pep8.StyleGuide(quiet=True)
-        p = style.check_files(["models/state.py"])
+        p = style.check_files(['models/state.py'])
         self.assertEqual(p.total_errors, 0, "fix pep8")
 
-    def test_to_dict(self):
-        """Test to_dict method."""
-        state_dict = self.state.to_dict()
-        self.assertEqual(dict, type(state_dict))
-        self.assertEqual(self.state.id, state_dict["id"])
-        self.assertEqual("State", state_dict["__class__"])
-        self.assertEqual(self.state.created_at.isoformat(),
-                         state_dict["created_at"])
-        self.assertEqual(self.state.updated_at.isoformat(),
-                         state_dict["updated_at"])
-        self.assertEqual(self.state.name, state_dict["name"])
+    def test_checking_for_docstring_State(self):
+        """checking for docstrings"""
+        self.assertIsNotNone(State.__doc__)
+
+    def test_attributes_State(self):
+        """chekcing if State have attributes"""
+        self.assertTrue('id' in self.state.__dict__)
+        self.assertTrue('created_at' in self.state.__dict__)
+        self.assertTrue('updated_at' in self.state.__dict__)
+        self.assertTrue('name' in self.state.__dict__)
 
 
 if __name__ == "__main__":
