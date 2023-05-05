@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """distributes an archive to your web servers"""
-from fabric.api import *
+from fabric.api import put, run, env
 from datetime import datetime
 import os
 
@@ -49,7 +49,6 @@ def do_deploy(archive_path):
         run("rm -rf {}web_static".format(new_path))
         run("rm -rf /data/web_static/current")
         run("ln -s {} /data/web_static/current".format(new_path))
-        print("New version deployed!")
         return True
     except Exception:
         return False
