@@ -5,9 +5,12 @@ import models
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
+from os import getenv
 
-
-Base = declarative_base()
+if getenv("HBNB_TYPE_STORAGE") == "db":
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:
@@ -30,15 +33,8 @@ class BaseModel:
                     v = datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%f")
                 if k != "__class__":
                     setattr(self, k, v)
-            if "id" not in kwargs:
-                self.id = str(uuid.uuid4())
-            if "created_at" not in kwargs:
-                self.created_at = datetime.now()
-            if "updated_at" not in kwargs:
-                self.updated_at = datetime.now()
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.now()
+        self.id = str(uuid.uuid4())
+        self.created_at = self.updated_at = datetime.now()
 
     def __str__(self):
         """returns a string
