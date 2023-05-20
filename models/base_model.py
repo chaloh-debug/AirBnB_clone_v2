@@ -34,7 +34,8 @@ class BaseModel:
                 if k != "__class__":
                     setattr(self, k, v)
         self.id = str(uuid.uuid4())
-        self.updated_at = self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+        self.created_at = datetime.now()
 
     def __str__(self):
         """returns a string
@@ -43,11 +44,6 @@ class BaseModel:
         """
         return "[{}] ({}) {}".format(
             type(self).__name__, self.id, self.__dict__)
-
-    def __repr__(self):
-        """return a string representaion
-        """
-        return self.__str__()
 
     def save(self):
         """updates the public instance attribute updated_at to current
