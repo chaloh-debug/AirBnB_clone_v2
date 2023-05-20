@@ -23,7 +23,7 @@ class FileStorage:
         """Adds new object to storage dictionary"""
         self.__objects.update(
             {obj.to_dict()['__class__'] + '.' + obj.id: obj}
-            )
+        )
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -45,10 +45,10 @@ class FileStorage:
         from models.review import Review
 
         classes = {
-                    'BaseModel': BaseModel, 'User': User, 'Place': Place,
-                    'State': State, 'City': City, 'Amenity': Amenity,
-                    'Review': Review
-                  }
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
             temp = {}
             with open(self.__file_path, 'r') as f:
@@ -67,3 +67,9 @@ class FileStorage:
         obj_key = obj.to_dict()['__class__'] + '.' + obj.id
         if obj_key in self.__objects.keys():
             del self.__objects[obj_key]
+
+    def close(self):
+        """
+        calls reload method
+        """
+        self.reload()
