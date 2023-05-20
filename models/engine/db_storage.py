@@ -55,7 +55,7 @@ class DBStorage:
             objs = self.__session.query(cls).all()
             for obj in objs:
                 key = obj.__class__.__name__ + '.' + obj.id
-                dct[k] = obj
+                dct[key] = obj
         return dct
 
     def new(self, obj):
